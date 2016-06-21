@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: xmlcivicdrone
+# key: xmlcd
+# --
+<field>
+      <name>${1:name}</name>
+      <info>${2:info}</info>
+      <size>${3:size}</size>
+      <value>${4:value}</value>
+      <values>${4:value}</values>
+</field>
