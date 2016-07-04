@@ -40,7 +40,11 @@ values."
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode
             c-c++-enable-clang-support t)
-     cscope
+     (add-hook 'c++-mode-hook 'clang-format-bindings)
+     (defun clang-format-bindings ()
+       (define-key c++-mode-map [tab] 'clang-format-buffer))
+
+       cscope
      emacs-lisp
      git
      github
@@ -262,6 +266,7 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+  (setq flycheck-clang-args '(-fPIC -fPIE))
   )
 
 (defun dotspacemacs/user-config ()
@@ -284,9 +289,15 @@ you should place your code here."
   (global-set-key (kbd "C-x <down>") 'move-text-down)
   (global-unset-key (kbd "C-x o"))
   (global-unset-key (kbd "C-v"))
+  (global-unset-key (kbd "C-x b"))
+  (global-set-key (kbd "C-x b") 'helm-buffers-list)
 
   (global-set-key (kbd "C-x o") 'next-multiframe-window)
   (global-set-key (kbd "C-c n") 'next-error)
+
+  (global-set-key (kbd "<f5>") 'projectile-find-other-file)
+  (global-unset-key (kbd "C-x C-b"))
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
 
   (defun duplicate-line()
     (interactive)
@@ -322,6 +333,16 @@ you should place your code here."
 
   (setq c-default-style "linux")
   (setq-default c-basic-offset 4)
+  (setq flycheck-clang-include-path '("/home/master/.bin/qt/qt-5.6.0/include"
+        "/home/master/.bin/qt/qt-5.6.0/include/QtQml"
+        "/home/master/.bin/qt/qt-5.6.0/include/QtCore"
+        "/home/master/.bin/qt/qt-5.6.0/include/QtGui"
+        "/home/master/.bin/qt/qt-5.6.0/include/QtWidgets"
+        "/home/master/.bin/qt/qt-5.6.0/include/QtPositioning"
+        "/home/master/.bin/qt/qt-5.6.0/include/QtQuick"
+        "/home/master/.bin/qt/qt-5.6.0/include/QtQuick")
+        )
+
   )
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
