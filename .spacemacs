@@ -44,7 +44,8 @@ values."
      (defun clang-format-bindings ()
        (define-key c++-mode-map [tab] 'clang-format-buffer))
 
-       cscope
+
+     cscope
      emacs-lisp
      git
      github
@@ -299,6 +300,9 @@ you should place your code here."
   (global-unset-key (kbd "C-x C-b"))
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+  (spacemacs/set-leader-keys "of" 'clang-format-buffer)
+  (spacemacs/set-leader-keys "or" 'replace-string)
+
   (defun duplicate-line()
     (interactive)
     (move-beginning-of-line 1)
@@ -331,8 +335,6 @@ you should place your code here."
 
   (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 
-  (setq c-default-style "linux")
-  (setq-default c-basic-offset 4)
   (setq flycheck-clang-include-path '("/home/master/.bin/qt/qt-5.6.0/include"
         "/home/master/.bin/qt/qt-5.6.0/include/QtQml"
         "/home/master/.bin/qt/qt-5.6.0/include/QtCore"
