@@ -30,6 +30,7 @@ values."
      git
      markdown
      org
+     spacemacs-layout
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
@@ -67,6 +68,7 @@ values."
    ;; configuration in `dotspacemacs/user-config'.
 
    dotspacemacs-additional-packages '( cuda-mode
+                                       vagrant-tramp
                                       )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -267,7 +269,6 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  (setq flycheck-clang-args '(-fPIC -fPIE))
   )
 
 (defun dotspacemacs/user-config ()
@@ -314,6 +315,8 @@ you should place your code here."
     )
   (global-set-key (kbd "C-c l") 'duplicate-line)
   (global-set-key (kbd "C-c g") 'recompile)
+  (global-set-key (kbd "C-c SPC") 'company-complete)
+  (global-set-key (kbd "C-c C-SPC") 'company-complete)
 
   (ido-mode -1)
 
@@ -357,7 +360,7 @@ you should place your code here."
  '(flycheck-clang-language-standard "c++11")
  '(package-selected-packages
    (quote
-    (cuda-mode qml-mode cpputils-cmake helm-cscope xcscope android-mode web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode magit-gh-pulls less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jade-mode helm-gtags helm-css-scss helm-company helm-c-yasnippet haml-mode github-clone github-browse-file git-link gist gh logito pcache ggtags fish-mode emmet-mode emacs-eclim disaster company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp company-c-headers company coffee-mode cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete toc-org smeargle orgit org-repo-todo org-present org-pomodoro alert log4e gntp org-plus-contrib org-bullets mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore request helm-flyspell gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl auto-dictionary ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox hydra spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
+    (vagrant-tramp cuda-mode qml-mode cpputils-cmake helm-cscope xcscope android-mode web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode magit-gh-pulls less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jade-mode helm-gtags helm-css-scss helm-company helm-c-yasnippet haml-mode github-clone github-browse-file git-link gist gh logito pcache ggtags fish-mode emmet-mode emacs-eclim disaster company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp company-c-headers company coffee-mode cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete toc-org smeargle orgit org-repo-todo org-present org-pomodoro alert log4e gntp org-plus-contrib org-bullets mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore request helm-flyspell gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl auto-dictionary ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox hydra spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
  '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
