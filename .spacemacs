@@ -26,7 +26,7 @@ values."
      ;; auto-completion
      better-defaults
      auto-completion
-     emacs-lisp
+     ;;emacs-lisp
      git
      markdown
      org
@@ -75,7 +75,8 @@ values."
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'. (default t)
-   dotspacemacs-delete-orphan-packages t))
+   dotspacemacs-delete-orphan-packages t)
+   )
 
 (defun dotspacemacs/init ()
   "Initialization function.
@@ -135,7 +136,8 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("Source Code Pro"
+   ;; dotspacemacs-default-font '("Source Code Pro"
+   dotspacemacs-default-font '("Input Mono"
                                :size 13
                                :weight normal
                                :width normal
@@ -287,8 +289,8 @@ you should place your code here."
   (global-set-key (kbd "C-c C-y") 'yas-expand)
   (global-set-key (kbd "C-x M-o") 'other-frame)
   (global-set-key (kbd "M-:") 'yas-expand)
-  (global-set-key (kbd "C-x <up>") 'move-text-up)
-  (global-set-key (kbd "C-x <down>") 'move-text-down)
+  (global-set-key (kbd "C-x p") 'move-text-up)
+  (global-set-key (kbd "C-x n") 'move-text-down)
   (global-unset-key (kbd "C-x o"))
   (global-unset-key (kbd "C-v"))
   (global-unset-key (kbd "C-x b"))
@@ -300,6 +302,9 @@ you should place your code here."
   (global-set-key (kbd "<f5>") 'projectile-find-other-file)
   (global-unset-key (kbd "C-x C-b"))
   (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (global-set-key (kbd "C-c C-f") 'find-file-at-point)
+
+  (global-set-key (kbd "C-M-;") 'helm-gtags-previous-history)
 
   (spacemacs/set-leader-keys "of" 'clang-format-buffer)
   (spacemacs/set-leader-keys "or" 'replace-string)
@@ -313,10 +318,14 @@ you should place your code here."
     (next-line 1)
     (yank)
     )
-  (global-set-key (kbd "C-c l") 'duplicate-line)
+  (global-set-key (kbd "C-c d") 'duplicate-line)
   (global-set-key (kbd "C-c g") 'recompile)
   (global-set-key (kbd "C-c SPC") 'company-complete)
   (global-set-key (kbd "C-c C-SPC") 'company-complete)
+
+  ;;ansi term withouth asking the program
+  (global-set-key (kbd "C-c t") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
+  (global-set-key (kbd "C-c C-t") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
 
   (ido-mode -1)
 
@@ -349,6 +358,7 @@ you should place your code here."
         )
 
   )
+
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
 (custom-set-variables
@@ -360,8 +370,27 @@ you should place your code here."
  '(flycheck-clang-language-standard "c++11")
  '(package-selected-packages
    (quote
-    (vagrant-tramp cuda-mode qml-mode cpputils-cmake helm-cscope xcscope android-mode web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode magit-gh-pulls less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jade-mode helm-gtags helm-css-scss helm-company helm-c-yasnippet haml-mode github-clone github-browse-file git-link gist gh logito pcache ggtags fish-mode emmet-mode emacs-eclim disaster company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp company-c-headers company coffee-mode cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete toc-org smeargle orgit org-repo-todo org-present org-pomodoro alert log4e gntp org-plus-contrib org-bullets mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore request helm-flyspell gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl auto-dictionary ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox hydra spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
- '(paradox-github-token t))
+    (solarized-theme vagrant-tramp cuda-mode qml-mode cpputils-cmake helm-cscope xcscope android-mode web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode magit-gh-pulls less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jade-mode helm-gtags helm-css-scss helm-company helm-c-yasnippet haml-mode github-clone github-browse-file git-link gist gh logito pcache ggtags fish-mode emmet-mode emacs-eclim disaster company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp company-c-headers company coffee-mode cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete toc-org smeargle orgit org-repo-todo org-present org-pomodoro alert log4e gntp org-plus-contrib org-bullets mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore request helm-flyspell gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl auto-dictionary ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox hydra spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
+ '(paradox-github-token t)
+ '(projectile-other-file-alist
+   (quote
+    (("cpp" "h" "hpp" "ipp" "hh")
+     ("ipp" "h" "hpp" "cpp" "hh")
+     ("hpp" "h" "ipp" "cpp" "cc" "hh")
+     ("cxx" "h" "hxx" "ixx" "hh")
+     ("ixx" "h" "hxx" "cxx" "hh")
+     ("hxx" "h" "ixx" "cxx" "hh")
+     ("c" "h")
+     ("m" "h")
+     ("mm" "h")
+     ("h" "c" "cpp" "ipp" "hpp" "cxx" "ixx" "hxx" "m" "mm" "hh")
+     ("cc" "hh" "hpp")
+     ("hh" "cc")
+     ("vert" "frag")
+     ("frag" "vert")
+     (nil "lock" "gpg")
+     ("lock" "")
+     ("gpg" "")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
