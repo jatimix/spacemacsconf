@@ -78,11 +78,11 @@
     (push 'company-clang company-backends-c-mode-common)
 
     (defun company-mode/more-than-prefix-guesser ()
-      (c-c++/load-clang-args)
+      (c-c++/load-clang-args-cpp)
       (company-clang-guess-prefix))
 
     (setq company-clang-prefix-guesser 'company-mode/more-than-prefix-guesser)
-    (spacemacs/add-to-hooks 'c-c++/load-clang-args '(c-mode-hook c++-mode-hook))))
+    (spacemacs/add-to-hooks 'c-c++/load-clang-args-cpp '(c-mode-hook c++-mode-hook))))
 
 (when (configuration-layer/layer-usedp 'auto-completion)
   (defun c-c++/init-company-c-headers ()
