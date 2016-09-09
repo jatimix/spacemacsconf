@@ -60,6 +60,7 @@ values."
      unimpaired
      qt
      cpputil
+     multiterm
      ;;cudamode
      )
    ;; List of additional packages that will be installed without being
@@ -69,6 +70,7 @@ values."
 
    dotspacemacs-additional-packages '( cuda-mode
                                        vagrant-tramp
+                                       bison-mode
                                       )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -279,8 +281,11 @@ This function is called at the very end of Spacemacs initialization after
 layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
-you should place your code here."
+you should place your code hère."
 
+  ;;(dolist (key '((kbd "C-,")));; "C-v" "C-x o" "C-x b" "C-x C-b"))
+  (eval-after-load "flyspell"
+    '(define-key flyspell-mode-map (kbd "C-,") nil))
   ;; (global-set-kney (kbd "M-:") 'dabbrev-completion)
   ;; (global-set-key (kbd "C-:") 'dabbrev-completion)
   (global-set-key (kbd "C-:") 'hippie-expand)
@@ -298,6 +303,7 @@ you should place your code here."
 
   (global-set-key (kbd "C-x o") 'next-multiframe-window)
   (global-set-key (kbd "C-c n") 'next-error)
+  (global-set-key (kbd "C-c b") 'previous-error)
 
   (global-set-key (kbd "<f5>") 'projectile-find-other-file)
   (global-unset-key (kbd "C-x C-b"))
@@ -308,6 +314,9 @@ you should place your code here."
 
   (spacemacs/set-leader-keys "of" 'clang-format-buffer)
   (spacemacs/set-leader-keys "or" 'replace-string)
+
+  ;; anoying building
+ ;; (global-unset-key (kbd "C-,"))
 
   (defun duplicate-line()
     (interactive)
@@ -323,22 +332,32 @@ you should place your code here."
   (global-set-key (kbd "C-c SPC") 'company-complete)
   (global-set-key (kbd "C-c C-SPC") 'company-complete)
 
+  (global-set-key (kbd "M-p") 'scroll-down-command)
+  (global-set-key (kbd "M-n") 'scroll-up-command)
+
   ;;ansi term withouth asking the program
   (global-set-key (kbd "C-c t") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
   (global-set-key (kbd "C-c C-t") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
+
+  ;; rename symbol in a file
+  (spacemacs/set-leader-keys "oa" 'ahs-edit-mode)
+
+  ;; always reuse compilation buffer
+  ;;(push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
 
   (ido-mode -1)
 
   (smartparens-global-mode 1)
 
+  (ispell-change-dictionary "english") ;;default to english
   (defun fd-switch-dictionary()
     (interactive)
     (let* ((dic ispell-current-dictionary)
-           (change (if (string= dic "english") "english" "french")))
+           (change (if (string= dic "english") "french" "english")))
       (ispell-change-dictionary change)
       (message "Dictionary switched from %s to %s" dic change)
       ))
-  (global-set-key (kbd "<f8>")   'fd-switch-dictionary)
+  (global-set-key (kbd "<f8>") 'fd-switch-dictionary)
 
   ;; dont ask when killing process
   (setq kill-buffer-query-functions
@@ -354,8 +373,30 @@ you should place your code here."
         "/home/master/.bin/qt/qt-5.6.0/include/QtWidgets"
         "/home/master/.bin/qt/qt-5.6.0/include/QtPositioning"
         "/home/master/.bin/qt/qt-5.6.0/include/QtQuick"
-        "/home/master/.bin/qt/qt-5.6.0/include/QtQuick")
+        "/home/master/.bin/qt/qt-5.6.0/include/QtQuick"
+        "/usr/include/x86_64-linux-gnu/c++/5/"
+        "/usr/include/c++/5/"
         )
+  )
+
+  ;; some better version are available on the emacs wiki
+  (defun increment-number-at-point ()
+    (interactive)
+    (skip-chars-backward "0-9")
+    (or (looking-at "[0-9]+")
+        (error "No number at point"))
+    (replace-match (number-to-string (1+ (string-to-number (match-string 0))))))
+
+  (defun decrement-number-at-point ()
+    (interactive)
+    (skip-chars-backward "0-9")
+    (or (looking-at "[0-9]+")
+        (error "No number at point"))
+    (replace-match (number-to-string (1- (string-to-number (match-string 0))))))
+
+  (global-set-key (kbd "C-c +") 'increment-number-at-point)
+  (global-set-key (kbd "C-c -") 'decrement-number-at-point)
+  (global-set-key (kbd "C-c s") 'spacemacs/helm-buffers-smart-do-search)
 
   )
 
@@ -370,7 +411,7 @@ you should place your code here."
  '(flycheck-clang-language-standard "c++11")
  '(package-selected-packages
    (quote
-    (solarized-theme vagrant-tramp cuda-mode qml-mode cpputils-cmake helm-cscope xcscope android-mode web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode magit-gh-pulls less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jade-mode helm-gtags helm-css-scss helm-company helm-c-yasnippet haml-mode github-clone github-browse-file git-link gist gh logito pcache ggtags fish-mode emmet-mode emacs-eclim disaster company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp company-c-headers company coffee-mode cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete toc-org smeargle orgit org-repo-todo org-present org-pomodoro alert log4e gntp org-plus-contrib org-bullets mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore request helm-flyspell gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl auto-dictionary ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox hydra spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
+    (multi-term bison-mode solarized-theme vagrant-tramp cuda-mode qml-mode cpputils-cmake helm-cscope xcscope android-mode web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode magit-gh-pulls less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jade-mode helm-gtags helm-css-scss helm-company helm-c-yasnippet haml-mode github-clone github-browse-file git-link gist gh logito pcache ggtags fish-mode emmet-mode emacs-eclim disaster company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp company-c-headers company coffee-mode cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete toc-org smeargle orgit org-repo-todo org-present org-pomodoro alert log4e gntp org-plus-contrib org-bullets mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore request helm-flyspell gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl auto-dictionary ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox hydra spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
  '(paradox-github-token t)
  '(projectile-other-file-alist
    (quote
