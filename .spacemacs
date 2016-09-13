@@ -332,8 +332,8 @@ you should place your code hère."
   (global-set-key (kbd "C-c SPC") 'company-complete)
   (global-set-key (kbd "C-c C-SPC") 'company-complete)
 
-  (global-set-key (kbd "M-p") 'scroll-down-command)
-  (global-set-key (kbd "M-n") 'scroll-up-command)
+  (global-set-key (kbd "M-n") 'forward-paragraph)
+  (global-set-key (kbd "M-p") 'backward-paragraph)
 
   ;;ansi term withouth asking the program
   (global-set-key (kbd "C-c t") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
@@ -343,7 +343,7 @@ you should place your code hère."
   (spacemacs/set-leader-keys "oa" 'ahs-edit-mode)
 
   ;; always reuse compilation buffer
-  ;;(push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
+  (push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
 
   (ido-mode -1)
 
@@ -377,7 +377,7 @@ you should place your code hère."
         "/usr/include/x86_64-linux-gnu/c++/5/"
         "/usr/include/c++/5/"
         )
-  )
+        )
 
   ;; some better version are available on the emacs wiki
   (defun increment-number-at-point ()
@@ -398,6 +398,8 @@ you should place your code hère."
   (global-set-key (kbd "C-c -") 'decrement-number-at-point)
   (global-set-key (kbd "C-c s") 'spacemacs/helm-buffers-smart-do-search)
 
+  ;;(global-set-key (kbd "C-c s") 'spacemacs/helm-buffers-smart-do-search)
+
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -411,7 +413,7 @@ you should place your code hère."
  '(flycheck-clang-language-standard "c++11")
  '(package-selected-packages
    (quote
-    (multi-term bison-mode solarized-theme vagrant-tramp cuda-mode qml-mode cpputils-cmake helm-cscope xcscope android-mode web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode magit-gh-pulls less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jade-mode helm-gtags helm-css-scss helm-company helm-c-yasnippet haml-mode github-clone github-browse-file git-link gist gh logito pcache ggtags fish-mode emmet-mode emacs-eclim disaster company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp company-c-headers company coffee-mode cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete toc-org smeargle orgit org-repo-todo org-present org-pomodoro alert log4e gntp org-plus-contrib org-bullets mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore request helm-flyspell gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl auto-dictionary ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox hydra spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
+    (vimish-fold f multi-term bison-mode solarized-theme vagrant-tramp cuda-mode qml-mode cpputils-cmake helm-cscope xcscope android-mode web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode magit-gh-pulls less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jade-mode helm-gtags helm-css-scss helm-company helm-c-yasnippet haml-mode github-clone github-browse-file git-link gist gh logito pcache ggtags fish-mode emmet-mode emacs-eclim disaster company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp company-c-headers company coffee-mode cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete toc-org smeargle orgit org-repo-todo org-present org-pomodoro alert log4e gntp org-plus-contrib org-bullets mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore request helm-flyspell gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl auto-dictionary ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox hydra spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
  '(paradox-github-token t)
  '(projectile-other-file-alist
    (quote
