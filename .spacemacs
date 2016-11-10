@@ -6,6 +6,7 @@
   "Configuration Layers declaration.
 You should not put any user code in this function besides modifying the variable
 values."
+
   (setq-default
    ;; Base distribution to use. This is a layer contained in the directory
    ;; `+distribution'. For now available distributions are `spacemacs-base'
@@ -16,6 +17,7 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
+
    dotspacemacs-configuration-layers
    '(
      ;; ----------------------------------------------------------------
@@ -37,6 +39,9 @@ values."
      spell-checking
      syntax-checking
      version-control
+     clojure
+     python
+     ;;irony-mode
 
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode
@@ -44,7 +49,6 @@ values."
      (add-hook 'c++-mode-hook 'clang-format-bindings)
      (defun clang-format-bindings ()
        (define-key c++-mode-map [tab] 'clang-format-buffer))
-
 
      cscope
      emacs-lisp
@@ -71,7 +75,10 @@ values."
    dotspacemacs-additional-packages '( cuda-mode
                                        vagrant-tramp
                                        bison-mode
-                                      )
+                                       markdown-preview-mode
+                                       smart-cursor-color
+                                       smart-comment
+                                       )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -263,7 +270,7 @@ values."
    ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-whitespace-cleanup 'changed
    ))
 
 (defun dotspacemacs/user-init ()
@@ -284,6 +291,8 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code hère."
 
   ;;(dolist (key '((kbd "C-,")));; "C-v" "C-x o" "C-x b" "C-x C-b"))
+  (toggle-frame-maximized) ;; start emacs in maximized mode
+
   (eval-after-load "flyspell"
     '(define-key flyspell-mode-map (kbd "C-,") nil))
   ;; (global-set-kney (kbd "M-:") 'dabbrev-completion)
@@ -299,11 +308,17 @@ you should place your code hère."
   (global-unset-key (kbd "C-x o"))
   (global-unset-key (kbd "C-v"))
   (global-unset-key (kbd "C-x b"))
-  (global-set-key (kbd "C-x b") 'helm-buffers-list)
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+
+  (global-set-key (kbd "M-l") 'downcase-dwim)
+  (global-set-key (kbd "M-u") 'upcase-dwim)
 
   (global-set-key (kbd "C-x o") 'next-multiframe-window)
   (global-set-key (kbd "C-c n") 'next-error)
   (global-set-key (kbd "C-c b") 'previous-error)
+
+  (global-set-key (kbd "C-v b") 'helm-projectile-switch-to-buffer)
 
   (global-set-key (kbd "<f5>") 'projectile-find-other-file)
   (global-unset-key (kbd "C-x C-b"))
@@ -315,8 +330,8 @@ you should place your code hère."
   (spacemacs/set-leader-keys "of" 'clang-format-buffer)
   (spacemacs/set-leader-keys "or" 'replace-string)
 
-  ;; anoying building
- ;; (global-unset-key (kbd "C-,"))
+  ;; anoying build-in
+  ;; (global-unset-key (kbd "C-,"))
 
   (defun duplicate-line()
     (interactive)
@@ -364,7 +379,7 @@ you should place your code hère."
         (remq 'process-kill-buffer-query-function
               kill-buffer-query-functions))
 
-  (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+;  (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 
   (setq flycheck-clang-include-path '("/home/master/.bin/qt/qt-5.6.0/include"
         "/home/master/.bin/qt/qt-5.6.0/include/QtQml"
@@ -396,9 +411,34 @@ you should place your code hère."
 
   (global-set-key (kbd "C-c +") 'increment-number-at-point)
   (global-set-key (kbd "C-c -") 'decrement-number-at-point)
-  (global-set-key (kbd "C-c s") 'spacemacs/helm-buffers-smart-do-search)
 
+  (global-set-key (kbd "M-;") 'smart-comment)
+
+  (global-set-key (kbd "C-s") 'helm-swoop)
+
+  (global-set-key (kbd "C-c s") 'spacemacs/helm-project-smart-do-search)
   ;;(global-set-key (kbd "C-c s") 'spacemacs/helm-buffers-smart-do-search)
+
+  (smart-cursor-color-mode +1)
+  ;; better ibuf
+  (define-ibuffer-column size-h
+    (:name "Size" :inline t)
+    (cond
+     ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
+     ((> (buffer-size) 100000) (format "%7.0fk" (/ (buffer-size) 1000.0)))
+     ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
+     (t (format "%8d" (buffer-size)))))
+
+  ;; Modify the default ibuffer-formats
+  (setq ibuffer-formats
+        '((mark modified read-only " "
+                (name 18 18 :left :elide)
+                " "
+                (size-h 9 -1 :right)
+                " "
+                (mode 16 16 :left :elide)
+                " "
+                filename-and-process)))
 
   )
 
@@ -409,11 +449,17 @@ you should place your code hère."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-backends
+   (quote
+    (company-semantic company-irony company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf company-files
+                      (company-dabbrev-code company-gtags company-etags company-keywords)
+                      company-oddmuse company-dabbrev)))
  '(cppcm-build-dirname "__build")
  '(flycheck-clang-language-standard "c++11")
+ '(helm-buffer-max-length nil)
  '(package-selected-packages
    (quote
-    (vimish-fold f multi-term bison-mode solarized-theme vagrant-tramp cuda-mode qml-mode cpputils-cmake helm-cscope xcscope android-mode web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode magit-gh-pulls less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jade-mode helm-gtags helm-css-scss helm-company helm-c-yasnippet haml-mode github-clone github-browse-file git-link gist gh logito pcache ggtags fish-mode emmet-mode emacs-eclim disaster company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp company-c-headers company coffee-mode cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete toc-org smeargle orgit org-repo-todo org-present org-pomodoro alert log4e gntp org-plus-contrib org-bullets mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore request helm-flyspell gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl auto-dictionary ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox hydra spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
+    (pyvenv pytest pyenv-mode py-yapf pip-requirements hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic clj-refactor inflections edn paredit peg cider-eval-sexp-fu cider queue clojure-mode company-qml smart-cursor-color smart-comment markdown-preview-mode websocket flycheck-irony company-irony irony vimish-fold f multi-term bison-mode solarized-theme vagrant-tramp cuda-mode qml-mode cpputils-cmake helm-cscope xcscope android-mode web-mode web-beautify tagedit stickyfunc-enhance srefactor slim-mode scss-mode sass-mode magit-gh-pulls less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jade-mode helm-gtags helm-css-scss helm-company helm-c-yasnippet haml-mode github-clone github-browse-file git-link gist gh logito pcache ggtags fish-mode emmet-mode emacs-eclim disaster company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp company-c-headers company coffee-mode cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete toc-org smeargle orgit org-repo-todo org-present org-pomodoro alert log4e gntp org-plus-contrib org-bullets mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore request helm-flyspell gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor diff-hl auto-dictionary ws-butler window-numbering volatile-highlights vi-tilde-fringe spaceline s powerline smooth-scrolling restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox hydra spinner page-break-lines open-junk-file neotree move-text macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-args evil-anzu anzu eval-sexp-fu highlight elisp-slime-nav define-word clean-aindent-mode buffer-move bracketed-paste auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async quelpa package-build use-package which-key bind-key bind-map evil spacemacs-theme)))
  '(paradox-github-token t)
  '(projectile-other-file-alist
    (quote
