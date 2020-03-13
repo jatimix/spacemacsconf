@@ -1,0 +1,19 @@
+http://quickbuild.nexguard.com
+https://gitlab.kudelski.com
+https://license.dev.nexguard.com/
+
+\\Hq\nxgshare
+\\cvl-fil-101.nexguard.com
+
+nxg-fr-vmgit01
+
+http://detectionservice.nexguard.com
+
+
+https://atlassian.hq.k.grp/confluence/pages/viewpage.action?spaceKey=ngptv&title=2018+-+Cartesian+Robustness+Test+Preparation
+
+[3:57 PM] Jourdan Anthony
+    Le dossier avec les contenus est "\\HQ\NxgShare\Archive2018\VTrack2\Internal Only - Tests\Customers\2018 - Cartesian\20180122 - Cartesian - STB content preparation"
+​[3:59 PM] Jourdan Anthony
+
+Et sous S3 il y a un dossier paytv-cartesian-inputs
